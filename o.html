@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura de Venta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+        .dashboard {
+            display: flex;
+            width: 100%;
+        }
+        .sidebar {
+            background-color: #ffab40;
+            color: white;
+            padding: 20px;
+            width: 250px;
+            height: 100%;
+        }
+        .sidebar h2 {
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+        }
+        .sidebar ul li a:hover {
+            background-color: #ff8c00;
+        }
+        .main-content {
+            padding: 20px;
+            width: 100%;
+            background-color: #f4f4f4;
+            overflow: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        .factura-container {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            background-color: #fff;
+            margin: 0 auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        .factura-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .factura-header-left, .factura-header-right {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 48%;
+            box-sizing: border-box;
+        }
+        .factura-header-left div, .factura-header-right div {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .factura-header-left label, .factura-header-right label {
+            margin-right: 10px;
+            font-size: 14px;
+            width: 140px;
+        }
+        .factura-header-left input[type="text"],
+        .factura-header-right select {
+            width: 300px;
+            padding: 4px 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .factura-header-left input[type="date"] {
+            width: 100px; /* Ajustar este valor según sea necesario */
+            font-size: 11px; /* Cambia este valor para ajustar el tamaño de la fuente */
+        }
+        .factura-header-left input[type="text"]#tipo,
+        .factura-header-right input[type="number"]#numero {
+            width: 100px;
+            font-size: 12px; /* Cambia este valor para ajustar el tamaño de la fuente */
+        }
+
+        .factura-items {
+            margin-top: 10px; /* Espaciado superior para la tabla */
+            overflow-x: auto; /* Permite desplazamiento horizontal si la tabla es muy ancha */
+            background-color: #fff; /* Asegura que el fondo coincida con el contenedor */
+            border-radius: 0.5rem; /* Suaviza los bordes del contenedor de la tabla */
+        }
+
+        .factura-items table {
+            width: 100%; /* Asegura que la tabla use todo el ancho disponible */
+            border-collapse: collapse; /* Evita bordes dobles */
+            font-size: 0.9em; /* Tamaño de fuente más pequeño */
+            background-color: transparent; /* Fondo transparente para la tabla */
+        }
+        
+        .factura-items table th, .factura-items table td {
+            padding: 6px; /* Espaciado interno en las celdas */
+            text-align: left; /* Alineación de texto */
+            border: 1px solid #ddd; /* Borde ligero para las celdas */
+            background-color: #fff; /* Asegura que las celdas tengan un fondo blanco */
+            font-size: 12px ; /* Tamaño de fuente más pequeño */
+        }
+
+        .factura-items table th  {
+            background-color:  #f2f2f2; /* Sombreado gris claro */
+            font-weight: bold; /* Negrita para encabezados */
+            font-size: 9px;
+        }
+
+        .factura-items input[type="text"], 
+        .factura-items input[type="number"] {
+            width: 100%;
+            padding: 4px;
+            font-size: 12px; /* Tamaño de fuente más pequeño */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        
+        .factura-items .delete-btn {
+            background: none;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+        }
+
+         /* Contenedor principal que agrupa formas de pago y totales */
+.formas-pago-contenedor-y-totales {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px; /* Espacio entre el bloque de formas de pago y el bloque de totales */
+    align-items: flex-start;
+    margin-bottom: 70px; /* Agrega un margen inferior para separar del siguiente bloque */
+}
+
+/* Estilos generales */
+.hidden { 
+    display: none; 
+}
+h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px; /* Espacio entre el título y las formas de pago */
+    text-align: left; /* Alineación del título */
+}
+/* Contenedor de las formas de pago */
+.formas-pago-contenedor {
+    position: relative; /* Esto permite que los márgenes funcionen */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacio entre filas */
+    padding-top: 0px; /* Ajusta el padding para acercar más el bloque */
+}
+
+/* Estilos para cada fila de formas de pago */
+.formas-pago {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 5px;
+            padding: 5px;
+            margin-left: -12px; /* Mueve la fila 20px hacia la izquierda */
+        }
+        /* Estilos para las etiquetas */
+        .formas-pago label {
+            margin-right: 5px; /* Espacio entre la etiqueta y el selector */
+            font-size: 14px; /* Tamaño de la fuente */
+            font-weight: bold; /* Resaltar las etiquetas */
+        }
+        /* Estilos para el selector de formas de pago */
+        .formas-pago-select {
+            width: 185px; /* Ancho específico para formas de pago */
+            padding: 4px 8px; /* Ajuste de padding */
+            font-size: 12px; /* Tamaño de la fuente */
+            border: none; /* Eliminar borde */
+            border-radius: 4px;
+            box-sizing: border-box; /* Incluye padding y borde en el tamaño total */
+        }
+        /* Estilos específicos para "Plazo de Pago" */
+        .plazo-pago {
+            width: 97px !important; /* Ancho ajustado */
+            padding: 4px 8px !important; /* Ajuste de padding */
+            font-size: 12px !important; /* Tamaño de la fuente */
+            border: 1px solid #e6e6e6;
+            border-radius: 4px;
+            background-color: #e6e6e6; /* Color de fondo distinto */
+            box-sizing: border-box;
+            margin-left: -8px; /* Mueve la casilla a la izquierda */
+        }
+
+       /* Estilos específicos para "Fecha de Vencimiento" */
+.fecha-vencimiento {
+    width: 79px !important; /* Ancho ajustado */
+    padding: 2px 8px !important; /* Ajuste de padding, reduce el padding superior */
+    font-size: 12px !important; /* Tamaño de la fuente */
+    border: 1px solid #e6e6e6; /* Borde más definido */
+    border-radius: 4px;
+    background-color: #e6e6e6; /* Color de fondo distinto */
+    box-sizing: border-box;
+    margin-left: 0px; /* Mueve la casilla a la izquierda */
+    margin-top: -23px; /* Ajusta este valor para subir la casilla */
+    height: 28px; /* Ajusta la altura según sea necesario */
+}
+
+/* Estilos para valor total pago */
+.valor-total-pago {
+    width: 150px; /* Ancho específico para el valor total */
+    padding: 2px 8px; /* Ajuste de padding, reduce el padding superior */
+    font-size: 12px; /* Tamaño de la fuente más pequeño */
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    background-color: #e6e6e6; /* Color de fondo distinto */
+    box-sizing: border-box; /* Incluye padding y borde en el tamaño total */
+    margin-left: 0px; /* Mueve la casilla a la izquierda */
+    margin-top: -23px; /* Ajusta este valor para subir la casilla */
+    height: 28px; /* Ajusta la altura según sea necesario */
+}
+
+        /* Opciones de pago */
+        .opciones-pago {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Espacio entre las casillas */
+        }
+
+/* Estilos específicos para el botón de eliminar */
+.eliminar-forma-pago {
+    background-color: #007BFF; /* Color de fondo rojo */
+    width: auto; /* Ancho automático */
+    height: auto; /* Altura automática */
+    padding: 5px 10px; /* Espacio interno */
+    font-size: 12px; /* Tamaño de fuente */
+    border: none;
+}
+
+.eliminar-forma-pago:hover {
+    background-color: #0056b3; /* Color de fondo más oscuro al pasar el cursor */
+}
+
+/* Botón para agregar una forma de pago */
+#agregar-forma-pago {
+    width: 150px; /* Establecer un ancho fijo */
+    height: 40px; /* Establecer una altura fija */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    font-size: 12px; /* Tamaño de fuente uniforme */
+}
+
+.resaltado { border: 2px solid blue; } /* Resaltar bordes cuando se enfoca */
+
+/* Contenedor de los totales */
+#totales-container {
+    width: 27%; /* Ajusta el ancho según sea necesario */
+    display: flex; /* Usa flexbox para la disposición en fila */
+    flex-direction: column; /* Coloca los elementos en una columna */
+    gap: 15px; /* Espacio entre los elementos */
+    margin-top: 10px; /* Espacio superior */
+    padding: 10px; /* Espacio interno del contenedor */
+    background-color: #f8f9fa; /* Fondo claro para el contenedor */
+    border-radius: 8px; /* Bordes redondeados del contenedor */
+    border: 1px solid #ddd; /* Borde sutil del contenedor */
+    text-align: left; /* Alinea el texto a la derecha */ 
+}
+
+#totales-container div {
+    padding: 2px; /* Espacio interno para cada elemento */
+    border-radius: 5px; /* Bordes redondeados para cada elemento */
+    background-color: #ffffff; /* Fondo blanco para cada elemento */
+    border: 1px solid #ddd; /* Borde sutil para cada elemento */
+    font-size: 12px; /* Tamaño de fuente uniforme */
+    font-weight: bold; /* Negrita para el texto */
+}
+#total-amount {
+    font-size: 18px; /* Tamaño de fuente más grande para el total general */
+}
+
+        /* Estilo para el bloque de total centrado */
+        .total-factura-centro {
+            text-align: center; /* Centrar el texto */
+            font-size: 16px !important; /* Tamaño del texto */
+            font-weight: bold; /* Texto en negrita */
+            margin-top: 40px; /* Aumentar la separación desde los elementos anteriores */
+            padding: 10px;
+        }
+
+        /* Estilo para centrar el total */
+        .total-factura-centro {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 50px; /* Aumentar el margen inferior */
+        }
+
+        /* Estilo para centrar los botones */
+        .botones-centro {
+            text-align: center;
+            margin-top: 30px; /* Aumentar el margen superior */
+        }
+
+        .botones-centro button {
+            padding: 8px 15px; /* Mantener el tamaño de los botones */
+            margin: 5px;
+            font-size: 0.9em; /* Disminuir el tamaño de la fuente */
+            cursor: pointer;
+        }
+
+         /* Personalizar el color del header del modal */
+         .modal-header {
+            background-color: #ffab40; /* Ejemplo de color personalizado */
+            color: white;
+            justify-content: flex-start; /* Alinear el contenido del header a la izquierda */
+        }
+
+        /* Alinear todo el texto a la izquierda en el modal */
+        .modal-body,
+        .modal-title,
+        .modal-header,
+        label,
+        p {
+            text-align: left; /* Alinear todo el texto a la izquierda */
+        }
+
+        /* Personalizar el botón de cerrar */
+        .close {
+            color: white;
+            opacity: 0.8;
+        }
+
+        .close:hover {
+            opacity: 1;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <h2>SisFin</h2>
+            <ul>
+                <li><a href="#" id="factura-venta-link">Factura de Venta</a></li>
+                <li><a href="#" id="otras-opciones-link">Otras Opciones</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section id="factura-venta-section" class="content-section hidden">
+                <div class="factura-container">
+                    <h2>Nueva Factura</h2>
+                    <form id="factura-form">
+                        <div class="factura-header">
+                            <div class="factura-header-left">
+                                <div>
+                                    <label for="tipo">Tipo (Prefijo):</label>
+                                    <input type="text" id="tipo" value="FV-1" readonly class="form-control">
+                                </div>
+                                <div>
+                                    <label for="cliente">Cliente:</label>
+                                    <input type="text" id="cliente" placeholder="Nombre del cliente" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="contacto">Contacto:</label>
+                                    <input type="text" id="contacto" placeholder="Número de contacto" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="fecha">Fecha de Emisión:</label>
+                                    <input type="date" id="fecha-hoy" class="form-control">
+                                </div>
+                            </div>
+                            <div class="factura-header-right">
+                                <div>
+                                    <label for="numero">Número de Factura:</label>
+                                    <input type="number" id="numero" value="1" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="vendedor">Vendedor:</label>
+                                    <select id="vendedor" class="form-control">
+                                        <option value="vendedor1">Vendedor 1</option>
+                                        <option value="vendedor2">Vendedor 2</option>
+                                        <option value="vendedor3">Vendedor 3</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="moneda">Moneda:</label>
+                                    <select id="moneda" class="form-control">
+                                        <option value="COP">COP - Peso Colombiano (Colombia)</option>
+                                        <option value="USD">USD - Dólar Estadounidense (EE.UU.)</option>
+                                        <option value="CLP">CLP - Peso Chileno (Chile)</option>
+                                        <option value="EUR">EUR - Euro (Unión Europea)</option>
+                                        <option value="GBP">GBP - Libra Esterlina (Reino Unido)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="factura-items">
+                            <table id="factura-items-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Producto</th>
+                                        <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Valor Unitario</th>
+                                        <th>% Descuento</th>
+                                        <th>Impuesto Cargo</th>
+                                        <th>Impuesto Retención</th>
+                                        <th>Valor Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="factura-items-body">
+                                    <tr>
+                                        <td>1</td>
+                                <td><input type="text" class="form-control" placeholder="Producto"></td>
+                                <td><input type="text" class="form-control" placeholder="Descripción"></td>
+                                <td><input type="number" class="form-control cantidad" placeholder="Cantidad" step="any"></td>
+                                <td><input type="number" class="form-control valor-unitario" placeholder="Valor Unitario" step="any"></td>
+                                <td><input type="number" class="form-control descuento" placeholder="% Descuento" step="any"></td>
+                                <td>
+                                    <select class="impuesto-cargo">
+                                        <!-- Opciones de impuesto según la moneda -->
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="impuesto-retencion">
+                                        <!-- Opciones de retención según la moneda -->
+                                    </select>
+                                </td>
+                                <td><input type="number" class="form-control valor-total" placeholder="Valor Total" readonly></td>
+                                <td><button type="button" class="btn btn-danger delete-btn"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary" id="add-row"></button>
+                </div>
+
+                <div class="formas-pago-contenedor-y-totales">
+                    <!-- Nueva sección de Formas de Pago -->
+                    <div class="formas-pago-contenedor">
+                        <h3>Medios de pago</h3> <!-- Agrega el título aquí -->
+                        <div id="formas-pago-contenedor">
+                            <!-- Aquí se agregarán dinámicamente las filas de formas de pago -->
+                        </div>
+                
+                        <button type="button" id="agregar-forma-pago" class="btn btn-primary">Agregar Forma de Pago</button>
+                
+                        <!-- Plantilla para la nueva fila -->
+                        <template id="forma-pago-template">
+                            <div class="formas-pago">
+                                <label for="formas-pago-select"></label>
+                                <select class="formas-pago-select form-select">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="cuenta-bancaria">Pagos por cuenta bancaria</option>
+                                    <option value="credito-proveedores">Crédito proveedores</option>
+                                    <option value="honorarios">Honorarios</option>
+                                    <option value="acreedores-varios">Acreedores varios</option>
+                                </select>
+                
+                                <!-- Estas casillas se mostrarán al seleccionar una forma de pago -->
+                                <div class="opciones-pago" style="display: none;">
+                                    <div>
+                                        <label for="plazo-pago"></label>
+                                        <select class="plazo-pago pago-casilla form-select">
+                                            <option value="hoy">Hoy</option>
+                                            <option value="15-dias">A 15 días</option>
+                                            <option value="30-dias">A 30 días</option>
+                                            <option value="45-dias">A 45 días</option>
+                                            <option value="60-dias">A 60 días</option>
+                                            <option value="90-dias">A 90 días</option>
+                                            <option value="120-dias">A 120 días</option>
+                                            <option value="360-dias">A 360 días</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="fecha-vencimiento"></label>
+                                        <input type="text" class="fecha-vencimiento pago-casilla form-control" readonly>
+                                    </div>
+                                    <div>
+                                        <label for="valor-total-pago"></label>
+                                        <input type="text" class="valor-total-pago pago-casilla form-control" readonly>
+                                    </div>
+                                    <button type="button" class="eliminar-forma-pago btn btn-danger">
+                                        <i class="fas fa-trash"></i> 
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                
+                    <!-- Sección de Totales -->
+                    <div id="totales-container" class="border rounded p-2">
+                        <div id="total-cantidad-valor-amount">Subtotal: 0</div>
+                        <div id="total-iva">Total IVA: $0.00</div>
+                        <div id="total-descuento">Total Descuento: %0</div> <!-- Este es el nuevo div para el total del descuento -->
+                        <div id="total-amount">Total A Pagar: 0</div>
+                    </div>
+                </div>
+                <!-- Nuevo bloque para el total centrado -->
+                <div class="total-factura-centro">
+                    Total de la factura: <span id="total-final"></span>
+                </div>
+                
+                <!-- Botones centrados debajo del total -->
+                <div class="botones-centro">
+                    <button type="button" id="cancelar-btn" class="btn btn-primary">Cancelar</button>
+                    <button type="button" id="guardar-btn" class="btn btn-primary">Guardar</button>
+                    <button type="button" id="guardar-enviar-btn" class="btn btn-primary">Guardar y Enviar Factura</button>
+                </div>
+
+                <!-- Modal para verificar datos de contacto -->
+    <div class="modal fade" id="verificarDatosModal" tabindex="-1" role="dialog" aria-labelledby="verificarDatosModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verificarDatosModalLabel">Verifica tus datos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Por favor, verifica los datos del contacto y correo al cual se enviará la factura electrónica:</p>
+
+                    <form>
+                        <div class="form-group">
+                            <label for="contacto-nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="contacto-nombre" placeholder="Ingresa tu nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="contacto-correo">Correo:</label>
+                            <input type="email" class="form-control" id="contacto-correo" placeholder="Ingresa tu correo">
+                        </div>
+                        <div class="form-group">
+                            <label for="copia-correo">Enviar copia a:</label>
+                            <input type="email" class="form-control" id="copia-correo" placeholder="Ingresa otro correo (opcional)">
+                        </div>
+                        <button type="button" id="enviar-factura-btn" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            </section>
+
+            <section id="otras-opciones-section" class="content-section hidden">
+                <h2>Otras Opciones</h2>
+                <p>Contenido de otras opciones aquí.</p>
+            </section>
+        </main>
+    </div>
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+
+    <script>
+        document.getElementById('factura-venta-link').onclick = function() {
+            document.getElementById('factura-venta-section').classList.remove('hidden');
+            document.getElementById('otras-opciones-section').classList.add('hidden');
+        };
+
+        document.getElementById('otras-opciones-link').onclick = function() {
+            document.getElementById('otras-opciones-section').classList.remove('hidden');
+            document.getElementById('factura-venta-section').classList.add('hidden');
+        };
+        document.addEventListener("DOMContentLoaded", function() {
+            const fechaHoyInput = document.getElementById('fecha-hoy');
+    
+            // Obtiene la fecha actual
+            const hoy = new Date();
+            const dia = String(hoy.getDate()).padStart(2, '0');
+            const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+            const anio = hoy.getFullYear();
+    
+            // Formatea la fecha como "AAAA-MM-DD" y la establece en el input
+            fechaHoyInput.value = `${anio}-${mes}-${dia}`;
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const addRowButton = document.getElementById('add-row');
+            const facturaItemsBody = document.getElementById('factura-items-body');
+            const monedaSelect = document.getElementById('moneda');
+            const totalAmountDiv = document.getElementById('total-amount');
+            let rowCount = 1; // Contador para el número de fila
+
+            const impuestosCargoOptions = {
+                COP: [
+                    { value: '0', text: '0%' },
+                    { value: '19', text: 'IVA 19%' },
+                    { value: '5', text: 'IVA 5%' }
+                ],
+                USD: [
+                    { value: '0', text: '0%' },
+                    { value: '4', text: 'Sales Tax 4%' },
+                    { value: '5', text: 'Sales Tax 5%' },
+                    { value: '6', text: 'Sales Tax 6%' }
+                ],
+                CLP: [
+                    { value: '0', text: '0%' },
+                    { value: '19', text: 'IVA 19%' }
+                ],
+                EUR: [
+                    { value: '0', text: '0%' },
+                    { value: '19', text: 'IVA 19% (Alemania)' },
+                    { value: '20', text: 'IVA 20% (Francia)' },
+                    { value: '21', text: 'IVA 21% (España)' },
+                    { value: '22', text: 'IVA 22% (Italia)' }
+                ],
+                GBP: [
+                    { value: '0', text: 'VAT 0%' },
+                    { value: '20', text: 'VAT 20%' }
+                ]
+            };
+    
+            const impuestosRetencionOptions = {
+                COP: [
+                    { value: '0', text: '0%' },
+                    { value: '11', text: 'Honorarios 11%' },
+                    { value: '4', text: 'Intereses 4%' },
+                    { value: '7', text: 'Intereses 7%' }
+                ],
+                USD: [
+                    { value: '0', text: '0%' },
+                    { value: '30', text: 'Pagos a extranjeros no residentes 30%' }
+                ],
+                CLP: [
+                    { value: '0', text: '0%' },
+                    { value: '10', text: 'Pagos a proveedores 10%' },
+                    { value: '35', text: 'Pagos a no residentes 35%' }
+                ],
+                EUR: [
+                    { value: '0', text: '0%' },
+                    { value: '26.375', text: 'Dividendos (Alemania) 26.375%' },
+                    { value: '30', text: 'Dividendos (Francia) 30%' },
+                    { value: '19', text: 'Dividendos (España) 19%' }
+                ],
+                GBP: [
+                    { value: '0', text: '0%' },
+                    { value: '20', text: 'Dividendos 20%' }
+                ]
+            };
+        
+            function formatCurrency(amount, currency) {
+                let formatter;
+                switch (currency) {
+                    case 'COP':
+                        formatter = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
+                        break;
+                    case 'USD':
+                        formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+                        break;
+                    case 'EUR':
+                        formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+                        break;
+                    case 'CLP':
+                        formatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' });
+                        break;
+                    case 'GBP':
+                        formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+                        break;
+                    default:
+                        formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+                }
+                return formatter.format(amount);
+            }
+
+        // Manejo de eliminar fila 
+        document.getElementById('factura-items-body').addEventListener('click', function(event) {
+            if (event.target.classList.contains('delete-btn') || event.target.closest('.delete-btn')) {
+            let row = event.target.closest('tr');
+                if (row) {
+                if (row.rowIndex === 1) {
+        // Limpiar los valores de la primera fila
+            let inputs = row.querySelectorAll('input');
+                inputs.forEach(input => input.value = '');
+                } else {
+        // Eliminar otras filas
+            row.remove();
+        // Actualizar los números de fila
+            let rows = document.querySelectorAll('#factura-items-body tr');
+                rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        }
+        calculateTotal(); // Recalcular total después de eliminar
+        }
+    }
+});
+        function updateImpuestos() {
+            const selectedMoneda = monedaSelect.value;
+            const cargoOptions = impuestosCargoOptions[selectedMoneda] || [];
+            const retencionOptions = impuestosRetencionOptions[selectedMoneda] || [];
+    
+            const rows = facturaItemsBody.querySelectorAll('tr');
+                rows.forEach(row => {
+            const cargoSelect = row.querySelector('.impuesto-cargo');
+            const retencionSelect = row.querySelector('.impuesto-retencion');
+    
+        // Guarda la selección actual
+            const currentCargoValue = cargoSelect.value;
+            const currentRetencionValue = retencionSelect.value;
+    
+        // Actualiza las opciones del selector
+            cargoSelect.innerHTML = cargoOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('');
+                retencionSelect.innerHTML = retencionOptions.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('');
+    
+        // Restaura la selección
+            cargoSelect.value = currentCargoValue;
+                retencionSelect.value = currentRetencionValue;
+            });
+        }
+    
+        function calculateTotal() {
+            const rows = facturaItemsBody.querySelectorAll('tr');
+                let total = 0;
+                let totalIVA = 0; // Variable para el total del IVA
+                let totalDescuento = 0; // Variable para el total del descuento
+                let totalCantidadValor = 0; // Variable para el total de cantidad * valor unitario
+
+            rows.forEach(row => {
+                const cantidad = parseFloat(row.querySelector('.cantidad').value) || 0;
+                const valorUnitario = parseFloat(row.querySelector('.valor-unitario').value) || 0;
+                const descuento = parseFloat(row.querySelector('.descuento').value) || 0;
+                const impuestoCargo = parseFloat(row.querySelector('.impuesto-cargo').value) || 0;
+                const impuestoRetencion = parseFloat(row.querySelector('.impuesto-retencion').value) || 0;
+    
+                const subtotal = cantidad * valorUnitario;
+                const descuentoTotal = subtotal * (descuento / 100);
+                const subtotalConDescuento = subtotal - descuentoTotal;
+                const impuestoTotal = subtotalConDescuento * (impuestoCargo / 100);
+                const totalRow = subtotalConDescuento + impuestoTotal;
+                const valorTotal = totalRow - (totalRow * (impuestoRetencion / 100));
+    
+            row.querySelector('.valor-total').value = valorTotal.toFixed(2);
+                total += valorTotal;
+                totalIVA += impuestoTotal; // Acumula el impuesto (IVA) en totalIVA
+                totalDescuento += descuentoTotal; // Acumula el total del descuento
+                totalCantidadValor += cantidad * valorUnitario; // Acumula el total de cantidad * valor unitario
+            });
+    
+                const currency = monedaSelect.value;
+                    totalAmountDiv.textContent = `Total A Pagar (${currency}): ${formatCurrency(total, currency)}`;
+            
+            // Actualizar el total del IVA
+                const totalIVAElement = document.getElementById('total-iva');
+                    totalIVAElement.textContent = `Total IVA (${currency}): ${formatCurrency(totalIVA, currency)}`;
+            
+            // Calcular y mostrar el total del descuento en porcentaje
+                const descuentoPorcentaje = (totalDescuento / total) * 100;
+                    document.getElementById('total-descuento').textContent = `Total Descuento: ${descuentoPorcentaje.toFixed(2)}%`; // Muestra el total del descuento en porcentaje
+            
+            // Actualizar el total del subtotal
+                document.getElementById('total-cantidad-valor-amount').textContent = `Subtotal (${currency}): ${formatCurrency(totalCantidadValor, currency)}`;
+            }
+            
+            function addRow() {
+                rowCount++;
+                    const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                            <td>${rowCount}</td>
+                            <td><input type="text" placeholder="Producto"></td>
+                            <td><input type="text" placeholder="Descripción"></td>
+                            <td><input type="number" placeholder="Cantidad" step="any" class="cantidad"></td>
+                            <td><input type="number" placeholder="Valor Unitario" step="any" class="valor-unitario"></td>
+                            <td><input type="number" placeholder="% Descuento" step="any" class="descuento"></td>
+                        <td>
+                            <select class="impuesto-cargo">
+                        <!-- Opciones de impuesto según la moneda -->
+                            </select>
+                        </td>
+                    <td>
+                        <select class="impuesto-retencion">
+                    <!-- Opciones de retención según la moneda -->
+                        </select>
+                    </td>
+                <td><input type="number" class="form-control valor-total" placeholder="Valor Total" readonly></td>
+                <td><button type="button" class="btn btn-danger delete-btn"><i class="fas fa-trash"></i></button></td>
+        `;
+        facturaItemsBody.appendChild(newRow);
+            updateImpuestos(); // Actualiza las opciones en la nueva fila
+                calculateTotal(); // Recalcula el total
+        }
+
+        facturaItemsBody.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const target = event.target;
+            if (target.matches('input') || target.matches('select')) {
+                    event.preventDefault(); // Previene el comportamiento por defecto del Enter
+                    addRow();
+                    }
+                }
+            });
+    
+        addRowButton.addEventListener('click', function() {
+            addRow();
+        });
+    
+        monedaSelect.addEventListener('change', function() {
+            updateImpuestos();
+                calculateTotal();
+        });
+    
+        facturaItemsBody.addEventListener('input', function(event) {
+            if (event.target.matches('.cantidad, .valor-unitario, .descuento, .impuesto-cargo, .impuesto-retencion')) {
+                calculateTotal();
+                }
+            });
+
+        facturaItemsBody.addEventListener('click', function(event) {
+            if (event.target.matches('.delete-btn')) {
+                const row = event.target.closest('tr');
+                    row.remove();
+                    calculateTotal();
+                    }
+                });
+    
+        updateImpuestos(); // Inicializa las opciones de impuestos en la carga de la página
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+    // Función para actualizar la fecha de vencimiento según el plazo de pago
+    function actualizarFechaVencimiento(plazoPago, fechaVencimientoInput) {
+        const plazoSeleccionado = plazoPago.value;
+        const fechaEmision = new Date(); // La fecha actual
+
+        let diasAgregar = 0;
+        switch (plazoSeleccionado) {
+            case '15-dias':
+                diasAgregar = 15;
+                break;
+            case '30-dias':
+                diasAgregar = 30;
+                break;
+            case '45-dias':
+                diasAgregar = 45;
+                break;
+            case '60-dias':
+                diasAgregar = 60;
+                break;
+            case '90-dias':
+                diasAgregar = 90;
+                break;
+            case '120-dias':
+                diasAgregar = 120;
+                break;
+            case '360-dias':
+                diasAgregar = 360;
+                break;
+            default:
+                diasAgregar = 0;
+        }
+
+        const fechaVencimiento = new Date(fechaEmision);
+        fechaVencimiento.setDate(fechaEmision.getDate() + diasAgregar);
+
+        const dia = String(fechaVencimiento.getDate()).padStart(2, '0');
+        const mes = String(fechaVencimiento.getMonth() + 1).padStart(2, '0');
+        const año = fechaVencimiento.getFullYear();
+
+        fechaVencimientoInput.value = `${dia}/${mes}/${año}`;
+    }
+
+    // Función para actualizar el valor total en la sección de formas de pago
+    function actualizarValorTotal(valorTotalInput) {
+        // Obtener el contenido de total-amount
+        const totalAmountText = document.getElementById('total-amount').textContent.trim();
+
+        // Eliminar la parte "Total A Pagar" del texto
+        const textoSinTotalAPagar = totalAmountText.replace(/Total A Pagar\s*/i, '').trim();
+
+        // Actualizar el campo de entrada con el texto modificado
+        valorTotalInput.value = textoSinTotalAPagar;
+    }
+
+    // Agregar evento para actualizar el valor total cuando cambie algo en el contenedor
+    document.getElementById('totales-container').addEventListener('input', function () {
+        const valorTotalInputs = document.querySelectorAll('.valor-total-pago');
+        valorTotalInputs.forEach(input => {
+            actualizarValorTotal(input);
+        });
+    });
+
+    // Agregar una nueva fila de forma de pago
+    document.getElementById('agregar-forma-pago').addEventListener('click', function() {
+        const template = document.getElementById('forma-pago-template').content.cloneNode(true);
+        const formaPago = document.createElement('div');
+        formaPago.classList.add('formas-pago');
+        formaPago.appendChild(template);
+
+        document.getElementById('formas-pago-contenedor').appendChild(formaPago);
+
+        // Configurar eventos para la nueva fila
+        const selectFormaPago = formaPago.querySelector('.formas-pago-select');
+        const opcionesPago = formaPago.querySelector('.opciones-pago');
+        const plazoPago = formaPago.querySelector('.plazo-pago');
+        const fechaVencimientoInput = formaPago.querySelector('.fecha-vencimiento');
+        const valorTotalInput = formaPago.querySelector('.valor-total-pago');
+        const eliminarBtn = formaPago.querySelector('.eliminar-forma-pago');
+
+        selectFormaPago.addEventListener('change', function () {
+            if (this.value !== "") {
+                opcionesPago.style.display = "flex";
+                actualizarValorTotal(valorTotalInput);
+                actualizarFechaVencimiento(plazoPago, fechaVencimientoInput);
+            } else {
+                opcionesPago.style.display = "none";
+            }
+        });
+
+        plazoPago.addEventListener('change', function () {
+            actualizarFechaVencimiento(plazoPago, fechaVencimientoInput);
+        });
+
+        eliminarBtn.addEventListener('click', function () {
+            formaPago.remove();
+        });
+    });
+
+    // Funcionalidad inicial para el primer formulario existente
+    const selectFormaPago = document.querySelector('#formas-pago-select');
+    const opcionesPago = document.querySelector('#opciones-pago');
+    const plazoPago = document.querySelector('#plazo-pago');
+    const fechaVencimientoInput = document.querySelector('#fecha-vencimiento');
+    const valorTotalInput = document.querySelector('#valor-total-pago');
+    const eliminarBtn = document.querySelector('#eliminar-forma-pago');
+
+    selectFormaPago.addEventListener('change', function () {
+        if (this.value !== "") {
+            opcionesPago.style.display = "flex";
+            actualizarValorTotal(valorTotalInput);
+            actualizarFechaVencimiento(plazoPago, fechaVencimientoInput);
+        } else {
+            opcionesPago.style.display = "none";
+        }
+    });
+
+    plazoPago.addEventListener('change', function () {
+        actualizarFechaVencimiento(plazoPago, fechaVencimientoInput);
+    });
+
+    eliminarBtn.addEventListener('click', function () {
+        selectFormaPago.value = "";
+        opcionesPago.style.display = "none";
+    });
+});
+
+// Función para actualizar el texto junto a "Total De La Factura"
+function actualizarTotalFactura() {
+    // Obtener el valor actual del campo total-amount
+        const totalAmountText = document.getElementById('total-amount').textContent.trim();
+
+    // Eliminar cualquier texto adicional como "Total A Pagar" y obtener solo el valor numérico
+        const textoSinTotalAPagar = totalAmountText.replace(/Total A Pagar\s*/i, '').trim();
+
+    // Actualizar el texto dentro del span con id="total-final"
+        const totalFacturaElement = document.getElementById('total-final');
+            totalFacturaElement.textContent = `$${textoSinTotalAPagar}`; 
+        }
+
+    // Detectar cambios en el contenido de total-amount
+        document.getElementById('total-amount').addEventListener('DOMSubtreeModified', function () {
+            actualizarTotalFactura();
+        });
+
+        document.getElementById('guardar-enviar-btn').addEventListener('click', function() {
+            const confirmacion = confirm("Al enviar la factura electrónica, no podrá ser editada, anulada o borrada. ¿Deseas continuar?");
+            
+            if (confirmacion) {
+                // Mostrar el modal con Bootstrap
+                $('#verificarDatosModal').modal('show');
+            } else {
+                alert("Envío de la factura cancelado.");
+            }
+        });
+        // Lógica para enviar la factura
+        document.getElementById('enviar-factura-btn').addEventListener('click', function() {
+            const nombre = document.getElementById('contacto-nombre').value;
+            const correo = document.getElementById('contacto-correo').value;
+            const copiaCorreo = document.getElementById('copia-correo').value;
+
+            // Aquí puedes agregar la lógica para enviar los datos (por ejemplo, usando AJAX o fetch)
+            alert(`Factura enviada a ${correo}${copiaCorreo ? ' y copia a ' + copiaCorreo : ''}.`);
+            
+            // Cerrar el modal después de enviar la factura
+            $('#verificarDatosModal').modal('hide');
+        });
+
+
+    </script>
+</body>
+</html>
+

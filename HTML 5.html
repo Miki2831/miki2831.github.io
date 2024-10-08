@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SisFin - Sistema Financiera Empresarial</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background-color: #f8e1a0; /* Color amarillo cálido */
+    }
+    .header {
+      background-color: #ffab40; /* Color naranja */
+      color: white;
+      text-align: center;
+      padding: 30px 0;
+    }
+    .header .logo {
+      width: 200px; /* Ajusta el tamaño del logotipo según sea necesario */
+      height: auto;
+      position: absolute;
+      right: 50px; /* Mover el logotipo aún más a la derecha */
+      top: 60px; /* Ajusta la posición hacia arriba, cambia el valor según sea necesario */
+      transform: translateY(-50%);
+    }
+    .header .social-icons {
+      position: absolute;
+      left: 580px; /* Alinea los iconos a la derecha */
+      top: 120px; /* Ajusta la posición hacia arriba */
+    }
+    .social-icons a {
+      margin: 0 10px;
+      color: #fff; /* Color blanco para los iconos */
+      font-size: 24px;
+      text-decoration: none;
+    }
+    .social-icons a:hover {
+      color: #ff8c00; /* Color de los iconos al pasar el ratón */
+    }
+    .form-container {
+      background-color: #fff3e0; /* Color de fondo de los formularios */
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-top: 50px;
+      margin-left: 20px; /* Ajuste de margen para mover el cuadro hacia la izquierda */
+      width: 70%; /* Reducir el ancho para que se ajuste mejor a la izquierda */
+      position: relative;
+    }
+    .nav-link {
+      color: white;
+    }
+    .nav-link.active {
+      background-color: #ff8c00; /* Color naranja oscuro */
+      border-radius: 5px;
+    }
+    .section {
+      display: none; /* Ocultar todas las secciones por defecto */
+      padding: 40px;
+      background-color: #fff3e0; /* Color de fondo de las secciones */
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .section.active {
+      display: block; /* Mostrar la sección activa */
+    }
+    .logo {
+      width: 705px; /* Tamaño aumentado del logotipo */
+      height: auto;
+      position: absolute;
+      top: 50%;
+      right: -800px; /* Mover el logotipo aún más a la derecha */
+      transform: translateY(-50%);
+    }
+    .btn-custom {
+      background-color: #ffab40; /* Color naranja */
+      color: white;
+    }
+    .modal-header {
+      background-color: #ffab40;
+      color: white;
+    }
+    .modal-footer .btn-custom {
+      width: auto;
+    }
+</style>
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header class="header">
+    <img src="SisFin3.png" alt="Logotipo" class="logo"> <!-- Ruta a tu logotipo -->
+    <h1>SisFin</h1>
+    <p>Gestión Financiera Empresarial</p>
+    <div class="social-icons">
+        <a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f" title="Facebook"></a>
+        <a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram" title="Instagram"></a>
+        <a href="mailto:info@example.com" class="fas fa-envelope" title="Correo Electrónico"></a>
+      </div>
+    </header>
+    
+  <!-- Navegación -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="about">Sobre SisFin</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="login">Iniciar Sesión</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Contenido Principal -->
+  <div class="container mt-4">
+    <div id="home" class="section active">
+      <h2>Bienvenido a SisFin</h2>
+      <p>En SisFin, ofrecemos soluciones financieras empresariales diseñadas para ayudarte a gestionar tus recursos de manera eficiente. Explora nuestras secciones para conocer más sobre nuestros servicios y cómo podemos ayudarte.</p>
+    </div>
+
+    <div id="about" class="section">
+      <h2>Sobre SisFin</h2>
+      <p>SisFin es una plataforma avanzada para la gestión financiera de empresas. Nuestros servicios incluyen la administración de seguros, pólizas, y más. Con un enfoque en la tecnología y la innovación, estamos aquí para brindarte las mejores herramientas para el éxito financiero.</p>
+    </div>
+
+    <div id="login" class="section">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-container">
+            <div class="form-content">
+              <h2 class="text-center mb-4">Iniciar Sesión</h2>
+              <form id="login-form">
+                <div class="form-group">
+                  <label for="login-username">Usuario</label>
+                  <input type="text" class="form-control" id="login-username" placeholder="Introduce tu usuario" required>
+                </div>
+                <div class="form-group">
+                  <label for="login-password">Contraseña</label>
+                  <input type="password" class="form-control" id="login-password" placeholder="Introduce tu contraseña" required>
+                </div>
+                <div class="text-right" style="margin-top: -25px;">
+                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#forgotPasswordModal">¿Olvidaste tu contraseña?</button>
+                <div class="text-center mt-3">
+                <button type="submit" class="btn btn-custom mb-3">Iniciar Sesión</button>
+                <div class="text-center">
+                  <button type="button" class="btn btn-link" data-toggle="modal" data-target="#registerModal">Regístrate Ahora</button>
+                </div>
+              </form>
+            </div>
+            <!-- Aquí se inserta la imagen del logotipo -->
+            <img src="SisFin2.png" alt="Logotipo" class="logo"> <!-- Ruta a tu logotipo -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ <!-- Modal de recuperación de contraseña -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="forgotPasswordModalLabel"style="font-weight: 740;">¿Olvidaste tu contraseña?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Formulario de recuperación de contraseña -->
+          <form>
+            <div class="form-group">
+              <label for="email">Para recuperar tu contraseña, ingresa el usuario o correo electronico de tu cuenta en SisFin</label>
+              <input type="email" class="form-control" id="email" placeholder="Usuario o Correo Electrónico*">
+            </div>
+            <div class="text-right">
+            <button type="submit" class="btn btn-primary">Enviar enlace de recuperación</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal de Registro -->
+  <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registerModalLabel">Registro en SisFin</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="register-form">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="reg-nombre">Nombre</label>
+              <input type="text" class="form-control" id="reg-nombre" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-apellido">Apellido</label>
+              <input type="text" class="form-control" id="reg-apellido" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-documento">Tipo de Documento</label>
+              <select class="form-control" id="reg-documento" required>
+                <option value="">Selecciona tipo de documento</option>
+                <option value="cedula-ciudadania">Cédula de Ciudadanía</option>
+                <option value="cedula-extranjero">Cédula de Extranjero</option>
+                <option value="pasaporte">Pasaporte</option>
+                <option value="permisos">Permisos</option>
+                <option value="rut">RUT</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reg-num-documento">Número de Documento o NIT</label>
+              <input type="text" class="form-control" id="reg-num-documento" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-direccion">Dirección</label>
+              <input type="text" class="form-control" id="reg-direccion" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-ciudad">Ciudad</label>
+              <select class="form-control" id="reg-ciudad" required>
+                <option value="">Selecciona tu ciudad</option>
+                <option value="bogota">Bogotá</option>
+                <option value="medellin">Medellín</option>
+                <option value="cali">Cali</option>
+                <option value="santa-marta">Santa Marta</option>
+                <option value="cartagena">Cartagena</option>
+                <option value="barranquilla">Barranquilla</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reg-celular">Número de Celular</label>
+              <input type="text" class="form-control" id="reg-celular" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-email">Correo Electrónico</label>
+              <input type="email" class="form-control" id="reg-email" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-custom">Continuar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Modal de Usuario Generado -->
+  <div class="modal fade" id="usernameModal" tabindex="-1" role="dialog" aria-labelledby="usernameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="usernameModalLabel">Datos de Acceso</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="credentials-form">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="generated-username">Nombre de Usuario Generado</label>
+              <input type="text" class="form-control" id="generated-username" readonly>
+            </div>
+            <div class="form-group">
+              <label for="reg-password">Contraseña</label>
+              <input type="password" class="form-control" id="reg-password" placeholder="Introduce tu contraseña" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-custom">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bootstrap JS, jQuery, y Popper.js -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Función para manejar la navegación entre secciones
+      $('a[data-target]').on('click', function(e) {
+        e.preventDefault();
+        var target = $(this).data('target');
+        
+        $('.section').removeClass('active');
+        $('#' + target).addClass('active');
+        
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');
+      });
+
+      // Manejar el envío del formulario de registro
+      $('#register-form').on('submit', function(event) {
+        event.preventDefault();
+
+        // Validar los campos del formulario
+        var nombre = $('#reg-nombre').val().trim();
+        var apellido = $('#reg-apellido').val().trim();
+
+        if (nombre === '' || apellido === '') {
+          alert('Por favor, rellena todos los campos.');
+          return;
+        }
+
+        // Generar el nombre de usuario
+        var randomNum = Math.floor(Math.random() * 1000);
+        var username = nombre.charAt(0).toLowerCase() + apellido.toLowerCase() + randomNum;
+
+        // Mostrar el modal con el usuario generado
+        $('#generated-username').val(username);
+        $('#registerModal').modal('hide');
+        $('#usernameModal').modal('show');
+      });
+
+      // Manejar el envío del formulario de credenciales
+      $('#credentials-form').on('submit', function(event) {
+        event.preventDefault();
+
+        // Validar la contraseña
+        var password = $('#reg-password').val().trim();
+        if (password === '') {
+          alert('Por favor, introduce una contraseña.');
+          return;
+        }
+
+        // Aquí puedes añadir la lógica para guardar el usuario y la contraseña
+        // Por ejemplo, enviar los datos a un servidor o guardarlos localmente
+
+        alert('Usuario y contraseña guardados con éxito.');
+        $('#usernameModal').modal('hide');
+      });
+    });
+  </script>
+
+</body>
+</html>
+

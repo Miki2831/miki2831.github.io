@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura de Venta</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #bfbfbf; /* Fondo gris oscuro */
+        }
+        .factura-container {
+            position: relative;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: white;
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .header .left {
+            flex: 1;
+            background-color: #ffab40;
+            padding: 20px;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+        .header h1 {
+            color: white; /* Color del texto para SisFin */
+        }
+        .header p {
+            color: white; /* Color del texto para Gestión Financiera Empresarial */
+        }
+        .header .right {
+            flex: 1;
+            background-color: white;
+            padding: 20px;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        h2 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: left;
+            margin-left: -120px !important; /* Aplica margen negativo para correr el texto a la izquierda */
+            line-height: 1.5; /* Ajusta la altura de la línea para evitar montarse */
+            white-space: nowrap;  /* Evita que las letras se rompan en varias líneas */
+            margin-top: 23px
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px; /* Espacio entre el título y las formas de pago */
+            margin-left: 50px !important; /* Aplica margen negativo para correr el texto a la izquierda */
+            line-height: 1.5; 
+            white-space: nowrap; 
+        }
+        .logo {
+            width: 100%;
+            max-width: 150px;
+        }
+        .qr-code {
+            width: 100px;
+            text-align: center;
+            margin-left: auto;
+        }
+        .clearfix {
+            clear: both;
+        }
+        .cuadro {
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 20px auto; /* Esto lo centra horizontalmente */
+            background-color: #f4f4f4;
+            width: 97%; /* O puedes usar un tamaño fijo como 600px */
+            height: auto; /* Puedes cambiarlo a un valor fijo si quieres */
+            font-family: 'Roboto', sans-serif; /* Cambia la fuente solo para los cuadros */
+    
+        }
+        .cuadro h4 {
+            font-size: 15px; /* Cambia el tamaño de los títulos dentro de los cuadros */
+            margin: 10px 0;
+        }
+
+        .titulo-cliente {
+            background-color: #ff8c00; /* Color de fondo para el título del cliente */
+            color: #fff; /* Color del texto */
+            padding: 10px;
+            font-family: 'Roboto', sans-serif; /* Cambia la fuente solo para este título */
+        }
+
+        .titulo-factura {
+            background-color: #ffab40; /* Color de fondo para el título de la factura */
+            color: #fff; /* Color del texto */
+            padding: 10px;
+            font-family: 'Roboto', sans-serif; /* Cambia la fuente solo para este título */
+        }
+
+        .titulo-detalle {
+            background-color: #ff8c00; /* Color de fondo para Detalle de la Factura */
+            color: #fff; /* Color del texto */
+            padding: 10px;
+            font-family: 'Roboto', sans-serif; /* Cambia la fuente solo para este título */
+        }
+
+        .titulo-observaciones {
+            background-color: #ffab40; /* Color de fondo para Observaciones de la Factura */
+            color: #fff; /* Color del texto */
+            padding: 10px;
+            font-family: 'Roboto', sans-serif; /* Cambia la fuente solo para este título */
+        }
+
+        .valor-lista {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Bordes solo para la segunda fila */
+        .cuadro .row:not(:last-child) {
+            border-bottom: 1px solid #ddd; /* Solo línea horizontal después de la primera fila */
+        }
+        .row > [class^="col-"] {
+            border-right: 1px solid #ddd; /* Bordes verticales */
+            padding: 10px;
+        }
+        .row > [class^="col-"]:last-child {
+            border-right: none; /* Quitar borde derecho de la última columna */
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="factura-container">
+    <div class="header">
+        <div class="left">
+            <img src="SisFin3.png" alt="Logotipo" class="logo">
+            <h1>SisFin</h1>
+            <p>Gestión Financiera Empresarial</p>
+        </div>
+        <div class="right">
+            <div class="qr-code">
+                <img id="qr-code" src="" alt="Código QR" style="width: 100%; height: auto;">
+                <h2>Factura Electrónica de Venta</h2>
+                <h3>N° <span id="numero-factura"></span></h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del Cliente -->
+    <div class="cuadro informacion-factura">
+    <h4 class="titulo-cliente"><i class="fas fa-user"></i> INFORMACIÓN DEL CLIENTE</h4>
+    <div class="row">
+        <div class="col-md-4"><strong>Nombres y Apellidos:</strong> <span id="nombre-cliente"></span></div>
+        <div class="col-md-4"><strong>NIT:</strong> <span id="nit-cliente"></span></div>
+        <div class="col-md-4"><strong>Celular:</strong> <span id="celular-cliente"></span></div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"><strong>Dirección:</strong> <span id="direccion-cliente"></span></div>
+        <div class="col-md-4"><strong>Ciudad:</strong> <span id="ciudad-cliente"></span></div>
+        <div class="col-md-4"><strong>Correo Electrónico:</strong> <span id="correo-cliente"></span></div>
+    </div>
+</div>
+
+<!-- Datos de la Factura -->
+<div class="cuadro datos-factura">
+    <h4 class="titulo-factura"><i class="fas fa-file-invoice"></i> DATOS DE LA FACTURA</h4>
+    <div class="row">
+        <div class="col-md-2"><strong>Fecha de Factura:</strong> <span id="fecha-factura"></span></div>
+        <div class="col-md-2"><strong>Fecha de Vencimiento:</strong> <span id="fecha-vencimiento"></span></div>
+        <div class="col-md-2"><strong>Fecha de Validación:</strong> <span id="fecha-validacion"></span></div>
+        <div class="col-md-3"><strong>Forma de Pago:</strong> <span id="forma-pago"></span></div>
+        <div class="col-md-3"><strong>Método de Pago:</strong> <span id="metodo-pago"></span></div>
+    </div>
+</div>
+
+    <!-- Detalle de la Factura -->
+    <div class="cuadro detalle-factura">
+        <h4 class="titulo-detalle"><i class="fas fa-file-invoice-dollar"></i> DETALLES DE LA FACTURA</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Valor Unitario</th>
+                    <th>% Descuento</th>
+                    <th>Impuesto Cargo</th>
+                    <th>Impuesto Retención</th>
+                    <th>Valor Total</th>
+                </tr>
+            </thead>
+            <tbody id="detalle-factura-body">
+                <!-- Aquí se agregarán las filas dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Observaciones de la Factura -->
+    <div class="cuadro observaciones-factura">
+        <h4 class="titulo-observaciones"><i class="fas fa-search"></i>OBSERVACIONES DE LA FACTURA</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <strong>Observaciones:</strong>
+                <p id="observaciones-factura"></p>
+            </div>
+            <div class="col-md-6">
+                <strong>Totales:</strong>
+                <div class="valor-lista">
+                    <span>Subtotal:</span> <span id="subtotal"></span>
+                </div>
+                <div class="valor-lista">
+                    <span>Descuento:</span> <span id="descuento"></span>
+                </div>
+                <div class="valor-lista">
+                    <span>IVA:</span> <span id="iva"></span>
+                </div>
+                <div class="valor-lista">
+                    <span>Total a Pagar:</span> <span id="total-pagar"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Aquí puedes establecer los valores dinámicos que se mostrarán en la factura
+    document.getElementById('numero-factura').textContent = "FV-1";
+    document.getElementById('nombre-cliente').textContent = "Juan Pérez";
+    document.getElementById('nit-cliente').textContent = "123456789";
+    document.getElementById('celular-cliente').textContent = "3001234567";
+    document.getElementById('direccion-cliente').textContent = "Calle 38 b sur";
+    document.getElementById('ciudad-cliente').textContent = "Bogotá D.C.";
+    document.getElementById('correo-cliente').textContent = "juan.perez@email.com";
+    document.getElementById('fecha-factura').textContent = "2023-09-29";
+    document.getElementById('fecha-vencimiento').textContent = "2023-10-29";
+    document.getElementById('fecha-validacion').textContent = "2023-09-30";
+    document.getElementById('forma-pago').textContent = "Efectivo";
+    document.getElementById('metodo-pago').textContent = "Pago en efectivo";
+    document.getElementById('observaciones-factura').textContent = ".";
+    
+    const detalleFactura = [
+        { numero: 1, producto: 'Producto A', descripcion: 'Descripción A', cantidad: 2, valorUnitario: 1000, descuento: 0, impuestoCargo: 0, impuestoRetencion: 0, valorTotal: 2000 },
+        { numero: 2, producto: 'Producto B', descripcion: 'Descripción B', cantidad: 1, valorUnitario: 1000, descuento: 0, impuestoCargo: 0, impuestoRetencion: 0, valorTotal: 1000 }
+    ];
+
+    const detalleBody = document.getElementById('detalle-factura-body');
+    detalleFactura.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.numero}</td>
+            <td>${item.producto}</td>
+            <td>${item.descripcion}</td>
+            <td>${item.cantidad}</td>
+            <td>${item.valorUnitario}</td>
+            <td>${item.descuento}%</td>
+            <td>${item.impuestoCargo}</td>
+            <td>${item.impuestoRetencion}</td>
+            <td>${item.valorTotal}</td>
+        `;
+        detalleBody.appendChild(row);
+    });
+    const subtotal = detalleFactura.reduce((acc, item) => acc + item.valorTotal, 0);
+    document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
+    document.getElementById('descuento').textContent = "$0";
+    const iva = subtotal * 0.19; // Suponiendo un IVA del 19%
+    document.getElementById('iva').textContent = `$${iva.toLocaleString()}`;
+    const totalPagar = subtotal + iva;
+    document.getElementById('total-pagar').textContent = `$${totalPagar.toLocaleString()}`;
+
+    // Generar código QR
+    const qrData = `Factura: FV-1\nCliente: Juan Pérez\nTotal: $${subtotal.toLocaleString()}`;
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(qrData)}`;
+    document.getElementById('qr-code').src = qrCodeUrl;
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+CREATE DATABASE SisFin3;
+GO

@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura de Venta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+
+body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            
+        }
+        .dashboard {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            background-color: #ffab40;
+            color: white;
+            padding: 20px;
+            width: 250px;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #ff8c00;;
+        }
+        .main-content {
+            padding: 20px;
+            width: 100%;
+            background-color: #f4f4f4;
+            overflow: auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .factura-container {
+            max-width: 100%; /* Ajuste para pantalla pequeña */
+            width: 100%; /* Tamaño carta */
+            height: auto; /* Tamaño carta */
+            background-color: #fff;
+            margin: 0 auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            transform: scale(1); /* Ajustable */
+            transform-origin: top left;
+            transition: transform 0.2s ease;
+        }
+
+        .factura-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .factura-header-left, .factura-header-right {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 48%;
+            box-sizing: border-box;
+        }
+
+        .factura-header-left div, .factura-header-right div {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .factura-header-left label, .factura-header-right label {
+            margin-right: 10px;
+            font-size: 14px; /* Tamaño de fuente más pequeño */
+            width: 140px; /* Ajustar según sea necesario */
+        }
+
+        .factura-header-left input[type="text"],
+        .factura-header-right select {
+            width: 300px; /* Ajusta este valor según sea necesario */
+            padding: 4px 8px; /* Ajuste de padding */
+            font-size: 14px; /* Tamaño de fuente más pequeño */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .factura-header-left input[type="date"],
+        .factura-header-left input[type="text"]#tipo,
+        .factura-header-right input[type="number"]#numero {
+            width: 100px; /* Ajusta este valor según sea necesario */
+        }
+
+        .factura-items {
+            margin-top: 20px;
+        }
+
+        .factura-items table {
+            width: 100%;
+            border-collapse: collapse;
+            box-sizing: border-box;
+        }
+
+        .factura-items table th, .factura-items table td {
+            border: 1px solid #ddd;
+            padding: 6px; /* Ajuste del padding */
+            text-align: left;
+            font-size: 12px; /* Tamaño de fuente más pequeño */
+        }
+
+        .factura-items table th {
+            background-color: #f2f2f2; /* Sombreado gris claro */
+            font-size: 9px;
+            font-family: 'Georgia', serif;
+        }
+
+        .factura-items table td {
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .factura-items input[type="text"], 
+        .factura-items input[type="number"] {
+            width: 100%;
+            padding: 4px;
+            font-size: 12px; /* Tamaño de fuente más pequeño */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .factura-items button {
+            margin-top: 10px;
+        }
+
+        .factura-items .delete-btn {
+            background: none;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+        }
+        
+
+        .hidden { 
+        display: none; 
+        }
+        .formas-pago { 
+            margin-top: 20px; 
+        }
+        .formas-pago label { 
+            display: block;
+             margin-bottom: 5px; /* Título encima de las casillas */
+             align-items: flex-start; /* Alinea los elementos al inicio del contenedor */
+            } 
+        #opciones-pago {
+            display: none; /* Cambiar a display flex para disposición horizontal */
+            flex-direction: row; /* Alinea los elementos en una fila */
+            gap: 10px; /* Espacio entre las casillas */
+            align-items: center; /* Centrado vertical de las casillas */
+            margin-top: 10px; /* Espacio superior para separar de otros elementos */
+        }
+        .pago-casilla {
+            margin: 0; /* Quitar margen adicional */
+            flex: 1; /* Permite que las casillas crezcan para llenar el espacio disponible */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100px; /* Ajusta este valor según lo necesites */
+            max-width: 150px; /* Limita el ancho máximo */
+        }
+
+        #agregar-forma-pago {
+        margin-top: 10px; /* Espacio entre el botón y las filas */
+        align-self: flex-start; /* Alinea el botón al inicio (izquierda) del contenedor */
+    }
+
+    .forma-pago-fila > div {
+    margin-bottom: 10px; /* Espacio debajo de cada div dentro de la fila */
+
+}
+
+.forma-pago-fila input,
+.forma-pago-fila select {
+    margin-right: 10px; /* Espacio a la derecha de cada input/select */
+    margin-bottom: 10px; /* Espacio debajo de cada input/select */
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+}
+        .resaltado { border: 2px solid blue; } /* Resaltar bordes cuando se enfoca */
+        button {
+            padding: 10px; /* Espacio interno del botón */
+            border: none; /* Sin borde por defecto */
+            border-radius: 4px; /* Bordes redondeados del botón */
+            background-color: #007BFF; /* Color de fondo del botón */
+            color: white; /* Color del texto del botón */
+            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+        }
+        button:hover {
+            background-color: #0056b3; /* Color de fondo al pasar el cursor */
+        }
+
+/* Estilos del Bloque de Totales */
+.factura-totales {
+    width: 35%; /* Ajusta el ancho según sea necesario */
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    text-align: right; /* Alinea el texto a la derecha */
+    margin-left: auto; /* Empuja el bloque hacia la derecha */
+}
+
+.factura-totales p {
+    margin: 5px 0;
+}
+
+.factura-totales span {
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <h2>SisFin</h2>
+            <ul>
+                <li><a href="#" id="factura-venta-link">Factura de Venta</a></li>
+                <li><a href="#" id="otras-opciones-link">Otras Opciones</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section id="factura-venta-section" class="content-section hidden">
+                <div class="factura-container">
+                    <h2>Nueva Factura</h2>
+                    <form id="factura-form">
+                        <div class="factura-header">
+                            <div class="factura-header-left">
+                                <div>
+
+                                    <label for="tipo">Tipo (Prefijo):</label>
+                                    <input type="text" id="tipo" value="FV-1" readonly>
+                                </div>
+                                <div>
+                                    <label for="cliente">Cliente:</label>
+                                    <input type="text" id="cliente" placeholder="Nombre del cliente">
+                                </div>
+                                <div>
+                                    <label for="contacto">Contacto:</label>
+                                    <input type="text" id="contacto" placeholder="Número de contacto">
+                                </div>
+                                <div>
+                                    <label for="fecha">Fecha de Emisión:</label>
+                                    <input type="date" id="fecha" value="2024-09-04">
+                                </div>
+                            </div>
+                            <div class="factura-header-right">
+                                <div>
+                                    <label for="numero">Número:</label>
+                                    <input type="number" id="numero" value="1" readonly>
+                                </div>
+                                <div>
+                                    <label for="moneda">Moneda:</label>
+                                    <select id="moneda">
+                                        <option value="COP">COP</option>
+                                        <option value="USD">USD</option>
+                                        <option value="CLP">CLP</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="factura-items">
+                            <table id="factura-items-table">
+                            <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Producto</th>
+                                        <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Valor Unitario</th>
+                                        <th>% Descuento</th>
+                                        <th>Impuesto Cargo</th>
+                                        <th>Impuesto Retención</th>
+                                        <th>Valor Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="factura-items-body">
+                                    <tr>
+                                        <td>1</td>
+                                        <td><input type="text" placeholder="Producto"></td>
+                                        <td><input type="text" placeholder="Descripción"></td>
+                                        <td><input type="number" placeholder="Cantidad" step="any"></td>
+                                        <td><input type="number" placeholder="Valor Unitario" step="any"></td>
+                                        <td><input type="number" placeholder="% Descuento" step="any"></td>
+                                        <td><input type="number" placeholder="Impuesto Cargo" step="any"></td>
+                                        <td><input type="number" placeholder="Impuesto Retención" step="any"></td>
+                                        <td><input type="number" placeholder="Valor Total" step="any" readonly></td>
+                                        <td><button type="button" class="delete-btn"><i class="fas fa-trash"></i></button></td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    <!-- Nueva sección de Formas de Pago -->
+                    <div class="formas-pago">
+                        <label for="formas-pago-select">Formas de Pago:</label>
+                        <select id="formas-pago-select">
+                            <option value="">Seleccione una opción</option>
+                            <option value="efectivo">Efectivo</option>
+                            <option value="cuenta-bancaria">Pagos por cuenta bancaria</option>
+                            <option value="credito-proveedores">Crédito proveedores</option>
+                            <option value="honorarios">Honorarios</option>
+                            <option value="acreedores-varios">Acreedores varios</option>
+                        </select>
+
+                        <!-- Estas casillas se mostrarán al seleccionar una forma de pago -->
+                        <div id="opciones-pago">
+                            <div>
+                                <label for="plazo-pago"></label>
+                                <select id="plazo-pago" class="pago-casilla">
+                                    <option value="hoy">Hoy</option>
+                                    <option value="15-dias">A 15 días</option>
+                                    <option value="30-dias">A 30 días</option>
+                                    <option value="45-dias">A 45 días</option>
+                                    <option value="60-dias">A 60 días</option>
+                                    <option value="90-dias">A 90 días</option>
+                                    <option value="120-dias">A 120 días</option>
+                                    <option value="360-dias">A 360 días</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="fecha-vencimiento"></label>
+                                <input type="text" id="fecha-vencimiento" class="pago-casilla" readonly>
+                            </div>
+                            <div>
+                                <label for="valor-total-pago"></label>
+                                <input type="text" id="valor-total-pago" class="pago-casilla" readonly>
+                            </div>
+                            <button type="button" id="eliminar-forma-pago">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                <div class="formas-pago">
+                        <div id="formas-pago-contenedor">
+                            <!-- Aquí se agregarán dinámicamente las filas de formas de pago -->
+                        </div>
+                        <button type="button" id="agregar-forma-pago">Agregar Forma de Pago</button>
+                    </div>
+                    
+                </form>
+                
+                <!-- Bloque de Totales -->
+                <div class="factura-totales">
+                    <p>Total Imponible: <span id="total-imponible">0</span></p>
+                    <p>Total IVA: <span id="total-iva">0</span></p>
+                    <p>Total Descuento: <span id="total-descuento">0</span></p>
+                    <p>Total a Pagar: <span id="total-pagar">0</span></p>
+                </div>
+        </section>
+
+            <section id="otras-opciones-section" class="content-section hidden">
+                <h2>Otras Opciones</h2>
+                <p>Aquí puedes ver otras configuraciones del sistema.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+
+document.getElementById('factura-venta-link').addEventListener('click', function() {
+    document.getElementById('factura-venta-section').classList.remove('hidden');
+    document.getElementById('otras-opciones-section').classList.add('hidden');
+});
+
+document.getElementById('otras-opciones-link').addEventListener('click', function() {
+    document.getElementById('factura-venta-section').classList.add('hidden');
+    document.getElementById('otras-opciones-section').classList.remove('hidden');
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        let target = event.target;
+        if (target.tagName === 'INPUT' && target.type !== 'button') {
+            event.preventDefault(); // Evita el comportamiento por defecto del Enter
+
+            let row = target.closest('tr');
+            if (row) {
+                let tbody = document.getElementById('factura-items-body');
+                let rowCount = tbody.rows.length + 1;
+
+// Verifica si hay una fila vacía para no duplicar
+let hasEmptyRow = Array.from(tbody.rows).some(r => {
+                    let inputs = r.querySelectorAll('input');
+                    return Array.from(inputs).every(input => input.value.trim() === '');
+                });
+
+                if (!hasEmptyRow) {
+                    let newRow = tbody.insertRow();
+                    newRow.innerHTML = `
+                        <td>${rowCount}</td>
+                        <td><input type="text" placeholder="Producto"></td>
+                        <td><input type="text" placeholder="Descripción"></td>
+                        <td><input type="number" placeholder="Cantidad" step="any"></td>
+                        <td><input type="number" placeholder="Valor Unitario" step="any"></td>
+                        <td><input type="number" placeholder="% Descuento" step="any"></td>
+                        <td><input type="number" placeholder="Impuesto Cargo" step="any"></td>
+                        <td><input type="number" placeholder="Impuesto Retención" step="any"></td>
+                        <td><input type="number" placeholder="Valor Total" step="any" readonly></td>
+                        <td><button type="button" class="delete-btn"><i class="fas fa-trash"></i></button></td>
+
+                    `;
+                }
+            }
+        }
+    }
+});
+// Manejo de eliminar fila
+document.getElementById('factura-items-body').addEventListener('click', function(event) {
+    if (event.target.classList.contains('delete-btn') || event.target.closest('.delete-btn')) {
+        let row = event.target.closest('tr');
+        if (row) {
+            if (row.rowIndex === 1) {
+                // Limpiar los valores de la primera fila
+                let inputs = row.querySelectorAll('input');
+                inputs.forEach(input => input.value = '');
+            } else {
+                // Eliminar otras filas
+                row.remove();
+                // Actualizar los números de fila
+                let rows = document.querySelectorAll('#factura-items-body tr');
+                rows.forEach((row, index) => {
+                    row.cells[0].textContent = index + 1;
+                });
+            }
+        }
+    }
+});
+
+        // Mostrar/ocultar opciones de pago cuando se selecciona una forma de pago
+        document.getElementById('formas-pago-select').addEventListener('change', function () {
+            const opcionesPago = document.getElementById('opciones-pago');
+            if (this.value !== "") {
+                opcionesPago.style.display = "flex"; // Cambia a display flex para disposición horizontal
+                actualizarValorTotal();
+                actualizarFechaVencimiento();
+            } else {
+                opcionesPago.style.display = "none"; // Ocultar si no hay opción seleccionada
+            }
+        });
+
+        // Resaltar casillas cuando se están editando
+        const casillasPago = document.querySelectorAll('.pago-casilla');
+        casillasPago.forEach((casilla) => {
+            casilla.addEventListener('focus', function() {
+                this.classList.add('resaltado');
+            });
+            casilla.addEventListener('blur', function() {
+                this.classList.remove('resaltado');
+            });
+        });
+
+        // Actualizar la fecha de vencimiento según el plazo de pago
+        document.getElementById('plazo-pago').addEventListener('change', function () {
+            actualizarFechaVencimiento();
+        });
+
+        // Función para calcular la fecha de vencimiento
+        function actualizarFechaVencimiento() {
+            const plazoSeleccionado = document.getElementById('plazo-pago').value;
+            const fechaEmision = new Date(); // La fecha actual
+
+            let diasAgregar = 0;
+            switch (plazoSeleccionado) {
+                case '15-dias':
+                    diasAgregar = 15;
+                    break;
+                case '30-dias':
+                    diasAgregar = 30;
+                    break;
+                case '45-dias':
+                    diasAgregar = 45;
+                    break;
+                case '60-dias':
+                    diasAgregar = 60;
+                    break;
+                case '90-dias':
+                    diasAgregar = 90;
+                    break;
+                case '120-dias':
+                    diasAgregar = 120;
+                    break;
+                case '360-dias':
+                    diasAgregar = 360;
+                    break;
+                default:
+                    diasAgregar = 0;
+            }
+
+            const fechaVencimiento = new Date(fechaEmision);
+            fechaVencimiento.setDate(fechaEmision.getDate() + diasAgregar);
+
+            const dia = String(fechaVencimiento.getDate()).padStart(2, '0');
+            const mes = String(fechaVencimiento.getMonth() + 1).padStart(2, '0');
+            const año = fechaVencimiento.getFullYear();
+
+            document.getElementById('fecha-vencimiento').value = `${dia}/${mes}/${año}`;
+        }
+
+        // Función para mostrar el valor total en la sección de formas de pago
+        function actualizarValorTotal() {
+            let totalAPagar = 0;
+
+            const filas = document.querySelectorAll('#factura-items-body tr');
+
+            filas.forEach((fila) => {
+                const valorTotal = parseFloat(fila.querySelector('input[placeholder="Valor Total"]').value) || 0;
+                totalAPagar += valorTotal;
+            });
+
+            document.getElementById('valor-total-pago').value = totalAPagar.toFixed(2);
+        }
+
+        // Agregar eventos a los campos de las filas de productos para actualizar el valor total
+        document.getElementById('factura-items-body').addEventListener('input', function () {
+            actualizarValorTotal();
+        });
+
+        // Guardar información al hacer clic en cualquier parte de la factura
+        document.body.addEventListener('click', function () {
+            console.log('Guardando cambios...');
+            // Aquí iría el código para guardar la información de la factura
+        });
+
+        // Eliminar la forma de pago al hacer clic en el botón de eliminar
+        document.getElementById('eliminar-forma-pago').addEventListener('click', function () {
+            document.getElementById('formas-pago-select').value = "";
+            document.getElementById('opciones-pago').style.display = "none";
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const agregarFormaPagoBtn = document.getElementById('agregar-forma-pago');
+    const formasPagoContenedor = document.getElementById('formas-pago-contenedor');
+
+    // Función para inicializar eventos de las formas de pago
+    function inicializarFormasPago(formaPago) {
+        const formaPagoSelect = formaPago.querySelector('.formas-pago-select');
+        const opcionesPago = formaPago.querySelector('.opciones-pago');
+        const plazoPago = formaPago.querySelector('.plazo-pago');
+        const fechaVencimiento = formaPago.querySelector('.fecha-vencimiento');
+        
+
+        formaPagoSelect.addEventListener('change', function() {
+            if (formaPagoSelect.value !== "") {
+                opcionesPago.style.display = 'flex';
+            } else {
+                opcionesPago.style.display = 'none';
+                // Limpiar valores si se oculta
+                plazoPago.value = '';
+                fechaVencimiento.value = '';
+            }
+        });
+
+        // Otras inicializaciones
+        plazoPago.addEventListener('input', actualizarFechaVencimiento);
+        // Puedes agregar más eventos según sea necesario
+
+        formaPago.querySelector('.eliminar-forma-pago').addEventListener('click', function() {
+            formaPago.remove();
+            actualizarValorTotal();
+        });
+    }
+
+    // Función para agregar una nueva fila de forma de pago
+    function agregarFormaPago() {
+        const nuevaFila = document.createElement('div');
+        nuevaFila.classList.add('forma-pago-fila');
+
+        nuevaFila.innerHTML = `
+            <div>
+                <label>Forma de Pago:</label>
+                <select class="formas-pago-select">
+                    <option value="">Seleccione una opción</option>
+                    <option value="efectivo">Efectivo</option>
+                    <option value="cuenta-bancaria">Pagos por cuenta bancaria</option>
+                    <option value="credito-proveedores">Crédito proveedores</option>
+                    <option value="honorarios">Honorarios</option>
+                    <option value="acreedores-varios">Acreedores varios</option>
+                </select>
+            </div>
+            <div class="opciones-pago" style="display: none;">
+                <label></label>
+            <select class="plazo-pago">
+                <option value="0">Hoy</option>
+                <option value="15">A 15 días</option>
+                <option value="30">A 30 días</option>
+                <option value="45">A 45 días</option>
+                <option value="60">A 60 días</option>
+                <option value="90">A 90 días</option>
+                <option value="120">A 120 días</option>
+                <option value="360">A 360 días</option>
+            </select>
+            <input type="date" class="fecha-vencimiento" placeholder="Fecha de Vencimiento">
+            <input type="number" class="valor-total-pago" placeholder="Valor Total Pago">
+        </div>
+        <button type="button" class="eliminar-forma-pago">
+        <i class="fas fa-trash"></i> <!-- Ícono de basura de Font Awesome -->
+    </button>
+    `;
+
+        inicializarFormasPago(nuevaFila);
+        formasPagoContenedor.appendChild(nuevaFila);
+    }
+
+    // Función para actualizar la fecha de vencimiento según el plazo de pago
+    function actualizarFechaVencimiento() {
+        const plazoPago = this;
+        const fechaVencimiento = plazoPago.parentElement.querySelector('.fecha-vencimiento');
+        const diasPlazo = parseInt(plazoPago.value, 10);
+
+        if (!isNaN(diasPlazo)) {
+            const fechaActual = new Date();  // Obtiene la fecha actual
+            fechaActual.setDate(fechaActual.getDate() + diasPlazo); // Suma el plazo en días a la fecha actual
+            fechaVencimiento.value = fechaActual.toISOString().split('T')[0]; // Asigna la fecha de vencimiento
+        }
+    }
+
+    // Función para actualizar el valor total de todas las formas de pago
+    function actualizarValorTotal() {
+        let total = 0;
+        document.querySelectorAll('.valor-total-pago').forEach(function(input) {
+            total += parseFloat(input.value) || 0;
+        });
+        document.getElementById('valor-total-pago').value = total.toFixed(2); // Actualiza el campo con el total
+    }
+
+    agregarFormaPagoBtn.addEventListener('click', agregarFormaPago);
+
+    // Inicializar el valor total al cargar la página
+    actualizarValorTotal();
+});
+    </script>
+</body>
+</html>

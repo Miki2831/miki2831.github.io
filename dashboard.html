@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - SisFin</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8e1a0; /* Color amarillo cálido */
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      background-color: #ffab40; /* Color naranja */
+      color: white;
+      padding: 10px 20px; /* Reducir el tamaño del encabezado */
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .header .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 20px;
+    }
+    .header img {
+      height: 60px; /* Tamaño ajustado del logotipo */
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem; /* Tamaño de fuente ajustado */
+    }
+    .nav-link {
+      color: white;
+    }
+    .nav-link.active {
+      background-color: #ff8c00; /* Color naranja oscuro */
+      border-radius: 5px;
+    }
+    .section {
+      display: none; /* Ocultar todas las secciones por defecto */
+      padding: 40px;
+      background-color: #fff3e0; /* Color de fondo de las secciones */
+      border-radius: 8px;
+    }
+    .section.active {
+      display: block; /* Mostrar la sección activa */
+    }
+    .btn-custom {
+      background-color: #ffab40; /* Color naranja */
+      color: white;
+    }
+    /* Estilo para el footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffab40; /* Color de fondo del footer */
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Estilos para las Opciones Rápidas */
+    .quick-options {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 30px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .quick-option {
+      text-align: center;
+      margin: 0 20px;
+      padding: 10px;
+      flex: 1;
+      border-right: 1px solid #ccc;
+    }
+    .quick-option:last-child {
+      border-right: none;
+    }
+    .quick-option a {
+      text-decoration: none;
+      color: #333;
+    }
+    .option-icon {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
+    }
+    .quick-option p {
+      margin: 0;
+      font-weight: bold;
+    }
+    /* Estilo para resaltar los ítems al pasar el mouse */
+    .quick-option:hover {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header class="header">
+    <div class="logo-container">
+      <img src="SisFin3.png" alt="Logotipo SisFin">
+      <h1>SisFin</h1>
+    </div>
+  </header>
+
+  <!-- Navegación -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="quick-options">Opciones Rápidas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="reports">Reportes</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Contenido Principal -->
+  <div class="container mt-4">
+    <div id="quick-options" class="section active">
+      <h2>Te damos la bienvenida, ¿Qué deseas hacer?</h2>
+      <p>Aquí puedes encontrar acceso directo a las funcionalidades más usadas.</p>
+      
+      <!-- Opciones Rápidas -->
+      <div class="quick-options">
+        <!-- Item 1: Crea una factura nueva -->
+        <div class="quick-option">
+            <a href="crear_factura.html" target="_blank">
+                <img src="Factura.png" alt="Icono Factura" class="option-icon">
+                <p>Crea una factura nueva</p>
+            </a>
+        </div>
+
+        <!-- Item 2: Crea un producto o servicio -->
+        <div class="quick-option">
+            <a href="crear_producto.html" target="_blank">
+                <img src="producto.png" alt="Icono Producto" class="option-icon">
+                <p>Crea un producto o servicio</p>
+            </a>
+        </div>
+
+        <!-- Item 3: Crea la alerta -->
+        <div class="quick-option">
+            <a href="crear_alerta.html" target="_blank">
+                <img src="Alertas.png" alt="Icono Alerta" class="option-icon">
+                <p>Crea la alerta</p>
+            </a>
+        </div>
+
+        <!-- Nuevo Item: Facturas y Clientes -->
+        <div class="quick-option">
+            <a href="facturas_clientes.html" target="_blank">
+                <img src="Clientes1.png" alt="Icono Facturas y Clientes" class="option-icon">
+                <p>Facturas y Clientes</p>
+            </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="reports" class="section">
+      <h2>Reportes</h2>
+      <p>Accede a los reportes detallados y personalizados según tus necesidades.</p>
+      <!-- Agregar contenido específico para "Reportes" aquí -->
+    </div>
+  </div>
+
+  <!-- Pie de Página -->
+  <footer class="footer">
+    <p>&copy; 2024 SisFin. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Bootstrap JS, Popper.js y jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          let target = this.getAttribute('data-target');
+          document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
+          });
+          document.getElementById(target).classList.add('active');
+          document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+          });
+          this.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+

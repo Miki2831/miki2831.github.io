@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura de Venta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+        .dashboard {
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 15px;
+        }
+        .factura-container {
+            margin-bottom: 20px;
+        }
+        .formas-pago {
+            margin: 10px 0;
+        }
+        .total-factura-centro {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .botones-centro {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <h2>SisFin</h2>
+            <ul>
+                <li><a href="#" id="factura-venta-link" target="_blank">Factura de Venta</a></li>
+                <li><a href="#" id="otras-opciones-link">Otras Opciones</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <section id="factura-venta-section" class="content-section hidden">
+                <div class="factura-container">
+                    <h2>Nueva Factura</h2>
+                    <form id="factura-form">
+                        <div class="factura-header">
+                            <div class="factura-header-left">
+                                <div>
+                                    <label for="tipo">Tipo (Prefijo):</label>
+                                    <input type="text" id="tipo" value="FV-1" readonly class="form-control">
+                                </div>
+                                <div>
+                                    <label for="cliente">Cliente:</label>
+                                    <input type="text" id="cliente" placeholder="Nombre del cliente" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="contacto">Contacto:</label>
+                                    <input type="text" id="contacto" placeholder="Número de contacto" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="fecha">Fecha de Emisión:</label>
+                                    <input type="date" id="fecha-hoy" class="form-control">
+                                </div>
+                            </div>
+                            <div class="factura-header-right">
+                                <div>
+                                    <label for="numero">Número de Factura:</label>
+                                    <input type="number" id="numero" value="1" class="form-control">
+                                </div>
+                                <div>
+                                    <label for="vendedor">Vendedor:</label>
+                                    <select id="vendedor" class="form-control">
+                                        <option value="vendedor1">Vendedor 1</option>
+                                        <option value="vendedor2">Vendedor 2</option>
+                                        <option value="vendedor3">Vendedor 3</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="moneda">Moneda:</label>
+                                    <select id="moneda" class="form-control">
+                                        <option value="COP">COP - Peso Colombiano (Colombia)</option>
+                                        <option value="USD">USD - Dólar Estadounidense (EE.UU.)</option>
+                                        <option value="CLP">CLP - Peso Chileno (Chile)</option>
+                                        <option value="EUR">EUR - Euro (Unión Europea)</option>
+                                        <option value="GBP">GBP - Libra Esterlina (Reino Unido)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="factura-items">
+                            <table id="factura-items-table" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Producto</th>
+                                        <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Valor Unitario</th>
+                                        <th>% Descuento</th>
+                                        <th>Impuesto Cargo</th>
+                                        <th>Impuesto Retención</th>
+                                        <th>Valor Total</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="factura-items-body">
+                                    <tr>
+                                        <td>1</td>
+                                        <td><input type="text" class="form-control" placeholder="Producto"></td>
+                                        <td><input type="text" class="form-control" placeholder="Descripción"></td>
+                                        <td><input type="number" class="form-control cantidad" placeholder="Cantidad" step="any"></td>
+                                        <td><input type="number" class="form-control valor-unitario" placeholder="Valor Unitario" step="any"></td>
+                                        <td><input type="number" class="form-control descuento" placeholder="% Descuento" step="any"></td>
+                                        <td>
+                                            <select class="impuesto-cargo">
+                                                <!-- Opciones de impuesto según la moneda -->
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="impuesto-retencion">
+                                                <!-- Opciones de retención según la moneda -->
+                                            </select>
+                                        </td>
+                                        <td><input type="number" class="form-control valor-total" placeholder="Valor Total" readonly></td>
+                                        <td><button type="button" class="btn btn-danger delete-btn"><i class="fas fa-trash"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-primary" id="add-row">Agregar Fila</button>
+                        </div>
+
+                        <div class="formas-pago-contenedor-y-totales">
+                            <div class="formas-pago-contenedor">
+                                <h3>Medios de pago</h3>
+                                <div id="formas-pago-contenedor">
+                                    <!-- Aquí se agregarán dinámicamente las filas de formas de pago -->
+                                </div>
+                
+                                <button type="button" id="agregar-forma-pago" class="btn btn-primary">Agregar Forma de Pago</button>
+                
+                                <template id="forma-pago-template">
+                                    <div class="formas-pago">
+                                        <label for="formas-pago-select"></label>
+                                        <select class="formas-pago-select form-select">
+                                            <option value="">Seleccione una opción</option>
+                                            <option value="efectivo">Efectivo</option>
+                                            <option value="cuenta-bancaria">Pagos por cuenta bancaria</option>
+                                            <option value="credito-proveedores">Crédito proveedores</option>
+                                            <option value="honorarios">Honorarios</option>
+                                            <option value="acreedores-varios">Acreedores varios</option>
+                                        </select>
+                
+                                        <div class="opciones-pago" style="display: none;">
+                                            <div>
+                                                <label for="plazo-pago"></label>
+                                                <select class="plazo-pago pago-casilla form-select">
+                                                    <option value="hoy">Hoy</option>
+                                                    <option value="15-dias">A 15 días</option>
+                                                    <option value="30-dias">A 30 días</option>
+                                                    <option value="45-dias">A 45 días</option>
+                                                    <option value="60-dias">A 60 días</option>
+                                                    <option value="90-dias">A 90 días</option>
+                                                    <option value="120-dias">A 120 días</option>
+                                                    <option value="360-dias">A 360 días</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label for="fecha-vencimiento"></label>
+                                                <input type="text" class="fecha-vencimiento pago-casilla form-control" readonly>
+                                            </div>
+                                            <div>
+                                                <label for="valor-total-pago"></label>
+                                                <input type="text" class="valor-total-pago pago-casilla form-control" readonly>
+                                            </div>
+                                            <button type="button" class="eliminar-forma-pago btn btn-danger">
+                                                <i class="fas fa-trash"></i> 
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                
+                            <div id="totales-container" class="border rounded p-2">
+                                <div id="total-cantidad-valor-amount">Subtotal: 0</div>
+                                <div id="total-iva">Total IVA: $0.00</div>
+                                <div id="total-descuento">Total Descuento: %0</div>
+                                <div id="total-amount">Total A Pagar: 0</div>
+                            </div>
+                        </div>
+                
+                        <div class="botones-centro">
+                            <button type="button" id="guardar-factura" class="btn btn-success">Guardar Factura</button>
+                            <button type="button" id="imprimir-factura" class="btn btn-secondary" onclick="imprimirFactura()">Imprimir Factura</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('factura-venta-link').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('factura-venta-section').classList.remove('hidden');
+            window.open('about:blank', '_blank');
+        });
+
+        document.getElementById('add-row').addEventListener('click', function() {
+            let rowCount = document.querySelectorAll('#factura-items-body tr').length;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td><input type="text" class="form-control" placeholder="Producto"></td>
+                <td><input type="text" class="form-control" placeholder="Descripción"></td>
+                <td><input type="number" class="form-control cantidad" placeholder="Cantidad" step="any"></td>
+                <td><input type="number" class="form-control valor-unitario" placeholder="Valor Unitario" step="any"></td>
+                <td><input type="number" class="form-control descuento" placeholder="% Descuento" step="any"></td>
+                <td>
+                    <select class="impuesto-cargo">
+                        <option value="0">0%</option>
+                        <option value="5">5%</option>
+                        <option value="19">19%</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="impuesto-retencion">
+                        <option value="0">0%</option>
+                        <option value="10">10%</option>
+                        <option value="20">20%</option>
+                    </select>
+                </td>
+                <td><input type="number" class="form-control valor-total" placeholder="Valor Total" readonly></td>
+                <td><button type="button" class="btn btn-danger delete-btn"><i class="fas fa-trash"></i></button></td>
+            `;
+            document.getElementById('factura-items-body').appendChild(newRow);
+        });
+
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('delete-btn')) {
+                event.target.closest('tr').remove();
+                calcularTotales();
+            }
+        });
+
+        function calcularTotales() {
+            let subtotal = 0;
+            let totalIVA = 0;
+            let totalDescuento = 0;
+
+            const rows = document.querySelectorAll('#factura-items-body tr');
+
+            rows.forEach(row => {
+                const cantidad = row.querySelector('.cantidad').value;
+                const valorUnitario = row.querySelector('.valor-unitario').value;
+                const descuento = row.querySelector('.descuento').value;
+                const impuestoCargo = row.querySelector('.impuesto-cargo').value;
+                const valorTotal = (cantidad * valorUnitario) * (1 - (descuento / 100)) * (1 + (impuestoCargo / 100));
+                row.querySelector('.valor-total').value = valorTotal.toFixed(2);
+                subtotal += valorTotal;
+                totalIVA += valorTotal * (impuestoCargo / 100);
+                totalDescuento += valorTotal * (descuento / 100);
+            });
+
+            document.getElementById('total-cantidad-valor-amount').innerText = `Subtotal: $${subtotal.toFixed(2)}`;
+            document.getElementById('total-iva').innerText = `Total IVA: $${totalIVA.toFixed(2)}`;
+            document.getElementById('total-descuento').innerText = `Total Descuento: %${(totalDescuento / subtotal * 100).toFixed(2)}`;
+            document.getElementById('total-amount').innerText = `Total A Pagar: $${(subtotal + totalIVA - totalDescuento).toFixed(2)}`;
+        }
+
+        function imprimirFactura() {
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(`
+                <html>
+                <head>
+                    <title>Factura</title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+                </head>
+                <body>
+                    <h1>Factura de Venta</h1>
+                    <div>${document.getElementById('factura-venta-section').innerHTML}</div>
+                </body>
+                </html>
+            `);
+            newWindow.document.close();
+            newWindow.print();
+        }
+
+    </script>
+</body>
+</html>
